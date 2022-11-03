@@ -5,7 +5,12 @@
   "main": "index.js",
   "scripts": {
     "husky:prepare": "husky install",
-    "test": "jest"
+    "test": "jest --passWithNoTests --silent --noStackTrace",
+    "test:staged": "npm test -- --findRelatedTests",
+    "test:coverage": "npm test -- --coverage",
+    "test:unit": "npm test -- --watch -c jest-unit-config.js",
+    "test:integration": "npm test -- --watch -c jest-integration-config.js",
+    "test:verbose": "jest --passWithNoTests --runInBand"
   },
   "keywords": [],
   "author": "",
