@@ -1,4 +1,4 @@
-function v(t: any): any {
+function v (t: any): any {
   return 'e'
 }
 
