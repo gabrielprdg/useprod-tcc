@@ -1,12 +1,15 @@
 {
   "env": {
     "node": true,
-    "es2021": true
+    "es2021": true,
+    "jest": true
   },
   "extends": ["standard-with-typescript"],
   "overrides": [],
   "parserOptions": {
     "project": "./tsconfig.json"
   },
-  "rules": {}
+  "rules": {
+    "@typescript-eslint/consistent-type-definitions": "warn"
+  }
 }
