@@ -9,8 +9,7 @@ import {
 export const mockAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
     async add (account: AddAccountParams): Promise<AccountModel> {
-      // eslint-disable-next-line @typescript-eslint/return-await
-      return Promise.resolve(mockAccountModel())
+      return await Promise.resolve(mockAccountModel())
     }
   }
 

@@ -1,6 +1,7 @@
 import { AddAccount } from '../../../domain/usecases/account/addAccount/add-account'
 import { Authentication } from '../../../domain/usecases/account/addAccount/authentication'
-import { badRequest, ok, serverError } from '../../helpers/http/http-helper'
+import { EmailInUseError } from '../../errors/email-in-use-error'
+import { badRequest, forbidden, ok, serverError } from '../../helpers/http/http-helper'
 import { Controller } from '../../protocols/controller'
 import { HttpRequest, HttpResponse } from '../../protocols/http'
 import { Validation } from '../../protocols/validation'
@@ -18,7 +19,7 @@ export class SignUpController implements Controller {
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const error = await this.validation.validate(httpRequest)
+      const error = await this.validation.validate(httpRequest.body)
       if (error != null) {
         return badRequest(error)
       }
@@ -29,9 +30,22 @@ export class SignUpController implements Controller {
         password
       } = httpRequest.body
 
-      const account = await this.addAccount.add({ name, email, password })
+      const account = await this.addAccount.add({
+        name,
+        email,
+        password
+      })
 
-      return ok({ account })
+      if (!account) {
+        return forbidden(new EmailInUseError())
+      }
+
+      const accessToken = await this.authentication.auth({
+        email,
+        password
+      })
+
+      return ok({ accessToken })
     // eslint-disable-next-line no-unreachable
     } catch (err) {
       return serverError(err)
