@@ -1,4 +1,4 @@
-import { mockAddAccountParams } from '../../../../domain/test/mock-account'
+import { mockAccountModel, mockAddAccountParams } from '../../../../domain/test/mock-account'
 import { Hasher } from '../../../protocols/criptography/hasher'
 import { AddAccountRepository } from '../../../protocols/db/account/add-account-repository'
 import { LoadAccountByEmailRepository } from '../../../protocols/db/account/load-account-by-email-repository'
@@ -42,5 +42,12 @@ describe('DbAddAccount UseCase', () => {
     const loadByEmailSpy = jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail')
     await sut.add(mockAddAccountParams())
     expect(loadByEmailSpy).toHaveBeenCalledWith('any@mail.com')
+  })
+
+  it('Should return null if LoadAccountByEmailRepository not return null', async () => {
+    const { sut, loadAccountByEmailRepositoryStub } = makeSut()
+    jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail').mockReturnValueOnce(Promise.resolve(mockAccountModel()))
+    const account = await sut.add(mockAddAccountParams())
+    expect(account).toBeNull()
   })
 })
