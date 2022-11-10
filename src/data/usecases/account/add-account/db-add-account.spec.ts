@@ -1,4 +1,5 @@
 import { mockAccountModel, mockAddAccountParams } from '../../../../domain/test/mock-account'
+import { throwError } from '../../../../domain/test/test-helper'
 import { Hasher } from '../../../protocols/criptography/hasher'
 import { AddAccountRepository } from '../../../protocols/db/account/add-account-repository'
 import { LoadAccountByEmailRepository } from '../../../protocols/db/account/load-account-by-email-repository'
@@ -60,5 +61,12 @@ describe('DbAddAccount UseCase', () => {
       email: 'any@mail.com',
       password: 'hashed_password'
     })
+  })
+
+  it('Should throws if Hasher throws', async () => {
+    const { sut, hasherStub } = makeSut()
+    jest.spyOn(hasherStub, 'hash').mockImplementationOnce(throwError)
+    const promise = sut.add(mockAddAccountParams())
+    await expect(promise).rejects.toThrow()
   })
 })
