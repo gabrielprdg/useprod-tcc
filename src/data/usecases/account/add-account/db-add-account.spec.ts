@@ -50,4 +50,15 @@ describe('DbAddAccount UseCase', () => {
     const account = await sut.add(mockAddAccountParams())
     expect(account).toBeNull()
   })
+
+  it('Should call AddAccountRepository with correct values', async () => {
+    const { sut, addAccountRepositoryStub } = makeSut()
+    const addSpy = jest.spyOn(addAccountRepositoryStub, 'add')
+    await sut.add(mockAddAccountParams())
+    expect(addSpy).toHaveBeenCalledWith({
+      name: 'any_name',
+      email: 'any@mail.com',
+      password: 'hashed_password'
+    })
+  })
 })
